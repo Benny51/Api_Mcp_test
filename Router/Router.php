@@ -67,7 +67,7 @@ class Router
         {
             if($route->match($this->url))
             {
-                $route->call();
+                return $route->call();
             }
         }
 

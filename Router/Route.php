@@ -24,8 +24,11 @@ class Route
 
     public function match($url)
     {
+
+
         //enlever les / initiaux et finaux
         $url = trim($url,'/');
+        var_dump($url);
 
         //transformer l'url lorsqu'il y a des paramètres
 
@@ -33,18 +36,22 @@ class Route
 
         $path = preg_replace_callback("#:([\w]+)#",[$this,'paramMatch'],$this->path);
         //enlever les / début et finaux du pâth dans le constructeur
-
+        var_dump($path);
         //Vérifier l'url du début à la fin ^ début et $ pour la fin et au centre le path
         //Le drapeau i : vérifie majuscule et minuscule
         $regex = "#^$path$#i";
+        var_dump($regex);
 
+        //LE BUG EST ICI
         //Si l'url ne correspond pas
         if(!preg_match($regex,$url,$matches))
         {
             return false;
         }
+
+        var_dump($matches);
         //Enlève le premier élément du tableau
-        array_shift($matches);
+        //array_shift($matches);
         $this->matches = $matches;
 
         return true;
@@ -65,6 +72,9 @@ class Route
 
     public function call()
     {
+
+        var_dump($this->matches);
+
         if(is_string($this->callable))
         {
             $params = explode("#",$this->callable);
