@@ -44,6 +44,10 @@ class Route
         return true;
     }
 
+    /***
+     * On appel la function annonyme et on utilise cela avec les paramètres récupéré dans matches
+     * @return false|mixed
+     */
     public function call(){
         return call_user_func_array($this->callable, $this->matches);
     }
