@@ -6,17 +6,19 @@ class Route
 {
 
     private $path;
+    private $url;
+    /***
+     * @var Closure | string $callable
+     */
     private $callable;
     private $matches = [];
     private $params = [];
 
-    /***
-     * @param string $path : url de la route
-     * @param $callable : fonction qui sera appelée
-     */
-    public function __construct($path, $callable){
+
+    public function __construct($path, $callable,$url){
         $this->path = trim($path, '/');  // On retire les / inutile
         $this->callable = $callable;
+        $this->url = $url;
     }
 
     /***
@@ -40,6 +42,7 @@ class Route
         if(!preg_match($regex, $url, $matches)){
             return false;
         }
+
 
         array_shift($matches); //enlever le premier élément du tableau car on récupère l'entièreté de l'url
         $this->matches = $matches;  // On sauvegarde les paramètres dans l'instance pour plus tard
@@ -105,12 +108,15 @@ class Route
         return $path;
     }
 
-    /**
-     * @return string
-     */
-    public function getPath()
-    {
-        return $this->path;
-    }
 
+
+    public function run(){
+
+
+        if($this->match($this->url)){
+            return $this->call();
+        }
+
+        //throw new RouterException('No matching routes');
+    }
 }

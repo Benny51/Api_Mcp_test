@@ -49,15 +49,19 @@ class UsersController
 
     public function delete($id)
     {
+
+        print_r(
+            $_SERVER['REQUEST_METHOD']);
+
         if($_SERVER['REQUEST_METHOD'] === 'DELETE')
         {
             http_response_code(200);
             $rows = $this->user->delete($id);
 
-            return json_encode($rows);
+            echo json_encode($rows);
         } else {
             http_response_code(405); //code qui respond à la méthod n'est pas autorisé
-            return json_encode(["message" => "Method not allowed"]);
+            echo json_encode(["message" => "Method not allowed"]);
         }
     }
 

@@ -3,6 +3,7 @@
 
 //Point d'entrée de l'application, c'est ici que les routes seront créées
 
+use Model\Users;
 use Router\Router;
 use Router\RouterException;
 
@@ -14,7 +15,12 @@ require_once ('Model/Users.php');
 
 $router = new Router($_GET['url']);
 
-$router->get('/homePage', function(){ echo "Homepage !"; });
+try {
+    $router->get('/homePage', function () {
+        echo "Homepage !";
+    })->run();
+} catch (RouterException $e) {
+}
 
 //Avec une fonction anonyme
 /*$router->get('/tiers/:id', function($id){
@@ -47,19 +53,22 @@ $router->get('/create',function (){
     header('Location:JS/create.html');
 });
 $router->post('/create',"Users#create");*/
-$router->get('/delete/:id',function ($id){});
-$router->delete('/delete/:id',"Users#delete");
+try {
+    $router->delete('/delete/:id', "Users#delete")->run();
+} catch (RouterException $e) {
+}
+
+$router->get('/getSlug/:id-:slug',function ($id,$slug){
+    echo "Tiers --> $slug --> $id";
+})->with('id','[0-9]+')->with('slug','[a-z\-0-9]+')->run();
+
+$router->get('/tiers/:id', "Users#getUserById")->run();
+
 /*
 $router->get('/create',function (){
     header('Location:JS/create.html');
 });*/
 
-try {
-    $router->run();
-} catch (RouterException $e) {
-    echo $e->getMessage();
-}
 
-?>
 
 
