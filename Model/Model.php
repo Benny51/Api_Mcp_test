@@ -6,7 +6,7 @@ interface Model
 {
     function create();
     function getAll();
-    function getById($id);
+    function getUserById($id);
     function update();
     function delete($id);
 

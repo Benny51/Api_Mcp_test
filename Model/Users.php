@@ -35,10 +35,13 @@ class Users implements Model
         return $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    function getById($id)
+    function getUserById($id)
     {
-        $sqlQuery = "SELECT * FROM $this->table_name where id = $this->colPrimaryKey";
-        $pdoStatement = $this->db->getBddConnect()->query($sqlQuery);
+        $sqlQuery = "SELECT * FROM $this->table_name where $this->colPrimaryKey = :id";
+        $pdoStatement = $this->db->getBddConnect()->prepare($sqlQuery);
+        $pdoStatement->execute(array(
+           'id'=>$id
+        ));
         return $pdoStatement->fetch(\PDO::FETCH_ASSOC);
     }
 
