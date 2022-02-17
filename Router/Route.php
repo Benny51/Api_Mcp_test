@@ -26,6 +26,7 @@ class Route
      * @return bool
      */
     public function match($url){
+
         $url = trim($url, '/'); //Enlever les espaces du début et finaux
         //Transform url --> remplacer le paramètre qui est derrière les : en tout ce qui n'est pas un /
         //$path = preg_replace('#:([\w]+)#', '([^/]+)', $this->path);
@@ -62,6 +63,20 @@ class Route
      * @return false|mixed
      */
     public function call(){
+
+        //Si c'est une chaine de caractère cela veut dire que l'on fait appel au controller ou au model
+
+        if(is_string($this->callable))
+        {
+            //# pour trouver la méthode dans le controller
+            $params = explode("#",$this->callable);
+            //Stocker le chemin et le nom du controller
+            $controller = "Controller\\".$params[0].'Controller';
+            $controller = new $controller();
+            return call_user_func_array([$controller,$params[1]],$this->matches);
+
+        }
+
         return call_user_func_array($this->callable, $this->matches);
     }
 
@@ -88,6 +103,14 @@ class Route
         }
 
         return $path;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPath()
+    {
+        return $this->path;
     }
 
 }

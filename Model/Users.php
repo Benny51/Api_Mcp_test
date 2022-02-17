@@ -25,7 +25,9 @@ class Users implements Model
 
     function create()
     {
-        // TODO: Implement create() method.
+        $sqlQuery = "INSERT INTO $this->table_name (id,username,password,age,email) values(x)";
+        $pdoStatement = $this->db->getBddConnect()->query($sqlQuery);
+        return $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     function getAll()
@@ -52,6 +54,11 @@ class Users implements Model
 
     function delete($id)
     {
-        // TODO: Implement delete() method.
+        $sqlquery = "DELETE FROM $this->table_name where $this->colPrimaryKey = :id";
+        $pdoStatement = $this->db->getBddConnect()->prepare($sqlquery);
+        $pdoStatement->bindParam(':id',$id);
+
+        return $pdoStatement->execute();
+
     }
 }
