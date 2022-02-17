@@ -79,4 +79,15 @@ class Route
         return $this; // fluent pour enchainer les arguments
     }
 
+    public function getUrl($params)
+    {
+        $path = $this->path;
+
+        foreach ($params as $param => $k) {
+            $path = str_replace(":$param",$k,$path);
+        }
+
+        return $path;
+    }
+
 }

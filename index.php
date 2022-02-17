@@ -28,6 +28,16 @@ $router->get('/getSlug/:slug-:id',function ($slug,$id){
 })->with('id','[0-9]+')->with('slug','[a-z\-0-9]+');
 //Ici quand l'url cherchera les paramètres pour l'id il ne pourra prendre que des chiffres et pour le slug il pourra tout prendre
 
+//Avec route nommée
+
+$router->get('/namedRoute/:id-:slug',function ($id,$slug) use($router){
+    echo $router->url('name',['id'=>$id,'slug'=>$slug]);
+},'name')->with('id','[0-9]+')->with('slug','[a-z\-0-9]+');
+
+//Avec le controller
+
+
+
 try {
     $router->run();
 } catch (RouterException $e) {

@@ -16,6 +16,11 @@ class Router
     private $routes;
 
     /***
+     * @var $nameRoutes array : tableau qui stock la route
+     */
+    private $nameRoutes = [];
+
+    /***
      * @param string $url
      */
     public function __construct($url)
@@ -24,11 +29,24 @@ class Router
         $this->url = $url;
     }
 
-    public function get($path,$callable)
+    public function get($path,$callable,$nameRoute=null)
+    {
+        return $this->map($path,$callable,$nameRoute,'GET');
+    }
+
+    private function map($path,$callable,$nameRoute,$method)
     {
         $route = new Route($path,$callable);
         //Ajouter dans le tableau indexé en get toutes les routes en get
-        $this->routes['GET'][] = $route;
+        $this->routes[$method][] = $route;
+
+        //S'il y a un nom pour la route on stock la route dans l'index du nom de la route
+
+        if($nameRoute)
+        {
+            $this->nameRoutes[$nameRoute] = $route;
+        }
+
         return $route; //pour enchainer les méthodes
     }
 
@@ -53,5 +71,15 @@ class Router
         }
         //Sinon pas de route de trouvée
         throw new RouterException('No matching routes');
+    }
+
+    public function url($nameRoute,$params = [])
+    {
+        if(!isset($this->nameRoutes[$nameRoute])){
+            throw new RouterException("No route matches this name");
+
+        }
+
+        return $this->nameRoutes[$nameRoute]->getUrl($params);
     }
 }
