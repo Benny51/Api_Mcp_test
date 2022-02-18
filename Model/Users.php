@@ -25,9 +25,15 @@ class Users implements Model
 
     function create()
     {
-        $sqlQuery = "INSERT INTO $this->table_name (id,username,password,age,email) values(x)";
-        $pdoStatement = $this->db->getBddConnect()->query($sqlQuery);
-        return $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
+        $sqlQuery = "INSERT INTO $this->table_name (username,password,age,email) values(:username,:password,:age,:email)";
+        $pdoStatement = $this->db->getBddConnect()->prepare($sqlQuery);
+        $passwordHash = password_hash($_POST['password'],PASSWORD_DEFAULT);
+        $pdoStatement->bindParam(':username',$_POST['username']);
+        $pdoStatement->bindParam(':password',$passwordHash);
+        $pdoStatement->bindParam(':age',$_POST['age']);
+        $pdoStatement->bindParam(':email',$_POST['email']);
+
+        return $pdoStatement->execute();
     }
 
     function getAll()
@@ -41,10 +47,14 @@ class Users implements Model
     {
         $sqlQuery = "SELECT * FROM $this->table_name where $this->colPrimaryKey = :id";
         $pdoStatement = $this->db->getBddConnect()->prepare($sqlQuery);
-        $pdoStatement->execute(array(
+        //$pdoStatement->bindParam(":id",$id);
+        /*$pdoStatement->execute(array(
            'id'=>$id
-        ));
-        return $pdoStatement->fetch(\PDO::FETCH_ASSOC);
+        ));*/
+        //return $pdoStatement->fetch(\PDO::FETCH_ASSOC);
+        $pdoStatement->bindParam(":id",$id);
+        $pdoStatement->execute();
+        return $pdoStatement;
     }
 
     function update()

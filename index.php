@@ -3,10 +3,11 @@
 
 //Point d'entrée de l'application, c'est ici que les routes seront créées
 
-use Model\Users;
+use Controller\UsersController;
 use Router\Router;
 use Router\RouterException;
 
+require_once ('Model/Response.php');
 require_once ('Model/Model.php');
 require_once ('Controller/UsersController.php');
 require_once ('Infrastructure/Config/Database.php');
@@ -16,7 +17,7 @@ require_once ('Model/Users.php');
 $router = new Router($_GET['url']);
 
 try {
-    $router->get('/homePage', function () {
+    $router->get('/', function () {
         echo "Homepage !";
     })->run();
 } catch (RouterException $e) {
@@ -49,26 +50,38 @@ $router->get('/namedRoute/:id-:slug',function ($id,$slug) use($router){
 //$router->get('/getAllTiers',"Users#getAllUsers");
 /*$router->get('/tiers/:id', "Users#getUserById");
 
-$router->get('/create',function (){
-    header('Location:JS/create.html');
-});
 $router->post('/create',"Users#create");*/
 try {
     $router->delete('/delete/:id', "Users#delete")->run();
 } catch (RouterException $e) {
+    echo $e->getMessage();
+    exit;
+}
+/*
+try {
+    $router->get('/getSlug/:id-:slug', function ($id, $slug) {
+        echo "Tiers --> $slug --> $id";
+    })->with('id', '[0-9]+')->with('slug', '[a-z\-0-9]+')->run();
+} catch (RouterException $e) {}*/
+
+try {
+    $router->get('/tiers/:id', "Users#getUserById")->run();
+} catch (RouterException $e) {
 }
 
-$router->get('/getSlug/:id-:slug',function ($id,$slug){
-    echo "Tiers --> $slug --> $id";
-})->with('id','[0-9]+')->with('slug','[a-z\-0-9]+')->run();
 
-$router->get('/tiers/:id', "Users#getUserById")->run();
+try {
+    $router->post('/create', "Users#create")->run();
+} catch (RouterException $e) {
+}
 
-/*
-$router->get('/create',function (){
-    header('Location:JS/create.html');
-});*/
+try {
+    $router->get('/tiersss',"Users#getAllUsers")->run();
+} catch (RouterException $e) {
+}
 
+
+//TODO : Gérer les erreurs des routes qui n'existent pas et les routes qui ne sont pas les routes
 
 
 

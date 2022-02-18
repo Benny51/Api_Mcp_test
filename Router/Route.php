@@ -13,12 +13,12 @@ class Route
     private $callable;
     private $matches = [];
     private $params = [];
-
-
-    public function __construct($path, $callable,$url){
+    private $method;
+    public function __construct($path, $callable,$url,$method){
         $this->path = trim($path, '/');  // On retire les / inutile
         $this->callable = $callable;
         $this->url = $url;
+        $this->method = $method;
     }
 
     /***
@@ -43,18 +43,17 @@ class Route
             return false;
         }
 
-
         array_shift($matches); //enlever le premier élément du tableau car on récupère l'entièreté de l'url
         $this->matches = $matches;  // On sauvegarde les paramètres dans l'instance pour plus tard
 
         return true;
     }
 
+
     private function paramMatch($match)
     {
         if(isset($this->params[$match[1]]))
         {
-
             return '('.$this->params[$match[1]].')';
         }
 
@@ -109,14 +108,25 @@ class Route
     }
 
 
-
+    /**
+     * @throws RouterException
+     */
     public function run(){
 
+        //Si jamais cela ne match pas
+        if(!isset($_SERVER['REQUEST_METHOD'])){
+            throw new RouterException('REQUEST_METHOD does not exist');
+        }
+
+        //Si la méthod n'est pas celle choisie
+        if($_SERVER['REQUEST_METHOD'] !== $this->method){
+            throw new RouterException('idk');
+        }
 
         if($this->match($this->url)){
             return $this->call();
         }
 
-        //throw new RouterException('No matching routes');
+
     }
 }

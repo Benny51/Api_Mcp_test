@@ -1,7 +1,9 @@
 <?php
 
 namespace Controller;
+use Model\Response;
 use Model\Users;
+use PDO;
 
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8"); //réponse en JSON
@@ -25,10 +27,28 @@ class UsersController
     {
         if($_SERVER['REQUEST_METHOD'] === 'GET')
         {
-            $findedUser = $this->user->getUserById($id);
-            http_response_code(200);
+            $pdoStatement = $this->user->getUserById($id);
 
-            echo json_encode($findedUser);
+            if($pdoStatement->rowCount() === 0)
+            {
+                $response = new Response();
+                $response->setHttpStatusCode(404);
+                $response->setSuccess(false);
+                $response->addMessage("Tiers not found");
+                $response->send();
+                exit;
+            }
+
+            $findUser = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+            $response = new Response();
+            $response->setHttpStatusCode(200);
+            $response->setSuccess(true);
+            $response->addMessage("find");
+            $response->toCache(true);
+            $response->setData($findUser);
+            $response->send();
+            exit;
+
         } else {
             http_response_code(405); //code qui respond à la méthod n'est pas autorisé
             echo json_encode(["message" => "Method not allowed"]);
@@ -49,10 +69,6 @@ class UsersController
 
     public function delete($id)
     {
-
-        print_r(
-            $_SERVER['REQUEST_METHOD']);
-
         if($_SERVER['REQUEST_METHOD'] === 'DELETE')
         {
             http_response_code(200);
@@ -69,9 +85,12 @@ class UsersController
     {
         if($_SERVER['REQUEST_METHOD'] === 'POST')
         {
-            http_response_code(200);
-            $this->user->create();
-            echo json_encode("User crée avec succès");
+
+            if (isset($_POST['submit']))
+            {
+                $this->user->create();
+            }
+
         } else {
             http_response_code(405); //code qui respond à la méthod n'est pas autorisé
             echo json_encode(["message" => "Method not allowed"]);

@@ -9,24 +9,12 @@ class Router
      * @var string $url;
      */
     private $url;
-    /***
-     * Contiendra toutes les routes du router
-     * @var Route[] $routes
-     */
-    private $routes;
-    private $method;
-    /***
-     * @var $nameRoutes array : tableau qui stock la route
-     */
-    private $nameRoutes = [];
-
 
     /***
      * @param string $url
      */
     public function __construct($url)
     {
-        $this->routes = [];
         $this->url = $url;
     }
 
@@ -49,7 +37,7 @@ class Router
     private function map($path,$callable,$nameRoute,$method)
     {
         $_SERVER['REQUEST_METHOD'] = $method;
-        return new Route($path,$callable,$this->url); //pour enchainer les méthodes
+        return new Route($path,$callable,$this->url,$method); //pour enchainer les méthodes
     }
 
 }
