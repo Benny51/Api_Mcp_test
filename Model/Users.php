@@ -57,10 +57,20 @@ class Users implements Model
         return $pdoStatement;
     }
 
-    function update()
+    function update($id)
     {
-        // TODO: Implement update() method.
-    }
+        $sqlQuery = "UPDATE $this->table_name set username = :username, set password = :password  ,set age = :age,set email = :email) where id = :id";
+        $pdoStatement = $this->db->getBddConnect()->prepare($sqlQuery);
+
+        $pdoStatement->bindParam(':id',$id);
+        $passwordHash = password_hash($_POST['password'],PASSWORD_DEFAULT);
+        $pdoStatement->bindParam(':username',$_POST['username']);
+        $pdoStatement->bindParam(':password',$passwordHash);
+        $pdoStatement->bindParam(':age',$_POST['age']);
+        $pdoStatement->bindParam(':email',$_POST['email']);
+        return $pdoStatement->execute();
+
+}
 
     function delete($id)
     {
@@ -68,7 +78,7 @@ class Users implements Model
         $pdoStatement = $this->db->getBddConnect()->prepare($sqlquery);
         $pdoStatement->bindParam(':id',$id);
 
-        return $pdoStatement->execute();
+        return $pdoStatement;
 
     }
 }

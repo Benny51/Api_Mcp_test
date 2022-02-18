@@ -67,14 +67,22 @@ class UsersController
         }
     }
 
+    public function update()
+    {
+        if($_SERVER['REQUEST_METHOD'] === 'PUT')
+        {
+
+        }
+    }
+
     public function delete($id)
     {
         if($_SERVER['REQUEST_METHOD'] === 'DELETE')
         {
             http_response_code(200);
-            $rows = $this->user->delete($id);
+            $delete = $this->user->delete($id);
+            $delete->execute();
 
-            echo json_encode($rows);
         } else {
             http_response_code(405); //code qui respond à la méthod n'est pas autorisé
             echo json_encode(["message" => "Method not allowed"]);

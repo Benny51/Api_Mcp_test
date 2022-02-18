@@ -16,13 +16,6 @@ require_once ('Model/Users.php');
 
 $router = new Router($_GET['url']);
 
-try {
-    $router->get('/', function () {
-        echo "Homepage !";
-    })->run();
-} catch (RouterException $e) {
-}
-
 //Avec une fonction anonyme
 /*$router->get('/tiers/:id', function($id){
     $user = new Users();
@@ -51,12 +44,7 @@ $router->get('/namedRoute/:id-:slug',function ($id,$slug) use($router){
 /*$router->get('/tiers/:id', "Users#getUserById");
 
 $router->post('/create',"Users#create");*/
-try {
-    $router->delete('/delete/:id', "Users#delete")->run();
-} catch (RouterException $e) {
-    echo $e->getMessage();
-    exit;
-}
+
 /*
 try {
     $router->get('/getSlug/:id-:slug', function ($id, $slug) {
@@ -64,24 +52,19 @@ try {
     })->with('id', '[0-9]+')->with('slug', '[a-z\-0-9]+')->run();
 } catch (RouterException $e) {}*/
 
+$router->get('/tiers/:id', "Users#getUserById");
+
+$router->post('/tiers/create', "Users#create");
+
+$router->delete('/tiers/delete/:id', "Users#delete");
+
+$router->get('/tiers',"Users#getAllUsers");
+
 try {
-    $router->get('/tiers/:id', "Users#getUserById")->run();
+    $router->run();
 } catch (RouterException $e) {
 }
 
-
-try {
-    $router->post('/create', "Users#create")->run();
-} catch (RouterException $e) {
-}
-
-try {
-    $router->get('/tiersss',"Users#getAllUsers")->run();
-} catch (RouterException $e) {
-}
-
-
-//TODO : Gérer les erreurs des routes qui n'existent pas et les routes qui ne sont pas les routes
 
 
 

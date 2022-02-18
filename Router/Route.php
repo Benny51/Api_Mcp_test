@@ -68,6 +68,7 @@ class Route
 
         //Si c'est une chaine de caractère cela veut dire que l'on fait appel au controller ou au model
 
+
         if(is_string($this->callable))
         {
             //# pour trouver la méthode dans le controller
@@ -109,24 +110,19 @@ class Route
 
 
     /**
-     * @throws RouterException
+     * throws RouterException
      */
-    public function run(){
-
-        //Si jamais cela ne match pas
-        if(!isset($_SERVER['REQUEST_METHOD'])){
-            throw new RouterException('REQUEST_METHOD does not exist');
-        }
-
-        //Si la méthod n'est pas celle choisie
-        if($_SERVER['REQUEST_METHOD'] !== $this->method){
-            throw new RouterException('idk');
-        }
+    /*public function run(){
 
         if($this->match($this->url)){
             return $this->call();
         }
 
+    }*/
 
+
+    public function getMethod()
+    {
+        return $this->method;
     }
 }

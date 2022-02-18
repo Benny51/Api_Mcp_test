@@ -9,6 +9,10 @@ class Router
      * @var string $url;
      */
     private $url;
+    /***
+     * @var Route array
+     */
+    private $routes = [];
 
     /***
      * @param string $url
@@ -36,8 +40,28 @@ class Router
 
     private function map($path,$callable,$nameRoute,$method)
     {
-        $_SERVER['REQUEST_METHOD'] = $method;
-        return new Route($path,$callable,$this->url,$method); //pour enchainer les méthodes
+        $route = new Route($path,$callable,$this->url,$method);
+
+        $this->routes[$method][] = $route;
+        return $route; //pour enchainer les méthodes
+    }
+
+    /**
+     * @throws RouterException
+     */
+    public function run(){
+
+        if(!isset($this->routes[$_SERVER['REQUEST_METHOD']])){
+            throw new RouterException('REQUEST_METHOD does not exist');
+        }
+
+        foreach($this->routes[$_SERVER['REQUEST_METHOD']] as $route){
+            if($route->match($this->url)){
+                return $route->call();
+            }
+
+        }
+        throw new RouterException('No matching routes');
     }
 
 }

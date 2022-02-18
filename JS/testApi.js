@@ -1,13 +1,14 @@
 $(document).ready(function() {
     $.ajax({
         method: "GET",
-        url: "http://localhost:8383/Api_Mcp_test/tiersss",
+        url: "http://localhost:8383/Api_Mcp_test/tiers",
         dataType:'json',
         success: function (records){
             for (let i = 0; i < records.length ; i++) {
-                $('#all').append(
-                    "<tr id='user_"+ records[i].id +"'>" +
+                console.log(records[i].id);
 
+                $('#all').append(
+                    "<tr id='"+ records[i].id +"'>" +
                     "<td><button onclick='getId("+records[i].id+")'>"+records[i].id +"</button></td>" +
                     "<td><button onclick='remove("+records[i].id+")'>"+records[i].username +"</button></td>" +
                     "<td>"+records[i].age +"</td>" +
@@ -46,10 +47,10 @@ function remove(id)
 {
     $.ajax({
         method: "DELETE",
-        url: "http://localhost:8383/Api_Mcp_test/delete/"+id,
+        url: "http://localhost:8383/Api_Mcp_test/tiers/delete/"+id,
         dataType:'json',
         success: function (records){
-            console.log(records)
+            $('#'+id).fadeOut("slow");
         }
     });
 }
