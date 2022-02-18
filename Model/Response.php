@@ -1,7 +1,7 @@
 <?php
 
 namespace Model;
-
+//Renommer succès en status
 // Response Object
 class Response {
     // define private variables

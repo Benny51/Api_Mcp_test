@@ -28,10 +28,9 @@ class UsersController
         if($_SERVER['REQUEST_METHOD'] === 'GET')
         {
             $pdoStatement = $this->user->getUserById($id);
-
+            $response = new Response();
             if($pdoStatement->rowCount() === 0)
             {
-                $response = new Response();
                 $response->setHttpStatusCode(404);
                 $response->setSuccess(false);
                 $response->addMessage("Tiers not found");
@@ -40,7 +39,7 @@ class UsersController
             }
 
             $findUser = $pdoStatement->fetch(PDO::FETCH_ASSOC);
-            $response = new Response();
+
             $response->setHttpStatusCode(200);
             $response->setSuccess(true);
             $response->addMessage("find");
@@ -59,8 +58,24 @@ class UsersController
     {
         if($_SERVER['REQUEST_METHOD'] === 'GET')
         {
-            http_response_code(200);
-            echo json_encode($this->user->getAll());
+            $users = $this->user->getAll();
+            $response = new Response();
+            if($users->rowCount() === 0)
+            {
+                $response->setHttpStatusCode(404);
+                $response->setSuccess(false);
+                $response->addMessage("Aucun user dans la db");
+                $response->send();
+                exit;
+            }
+
+            $response->setHttpStatusCode(200);
+            $response->setSuccess(true);
+            $response->toCache(true);
+            $response->setData($users->fetchAll(PDO::FETCH_ASSOC));
+            $response->send();
+            exit;
+
         } else {
             http_response_code(405); //code qui respond à la méthod n'est pas autorisé
             echo json_encode(["message" => "Method not allowed"]);
@@ -79,9 +94,25 @@ class UsersController
     {
         if($_SERVER['REQUEST_METHOD'] === 'DELETE')
         {
-            http_response_code(200);
-            $delete = $this->user->delete($id);
-            $delete->execute();
+
+            $deletequery = $this->user->delete($id);
+            $idUserquery = $this->user->getUserById($id);
+            $response = new Response();
+
+            if($idUserquery->rowCount()===0)
+            {
+                $response->setHttpStatusCode(404);
+                $response->setSuccess(false);
+                $response->addMessage("L'id tiers n'existe pas");
+                $response->send();
+                exit;
+            }
+            $deletequery->execute();
+            $response->setHttpStatusCode(200);
+            $response->setSuccess(true);
+            $response->addMessage("Delete");
+            $response->toCache(true);
+            $response->send();
 
         } else {
             http_response_code(405); //code qui respond à la méthod n'est pas autorisé
@@ -93,10 +124,29 @@ class UsersController
     {
         if($_SERVER['REQUEST_METHOD'] === 'POST')
         {
-
             if (isset($_POST['submit']))
             {
-                $this->user->create();
+                $pdostatement = $this->user->create();
+
+                $idUserquery = $this->user->getUserById($_POST['id']);
+                $response = new Response();
+                //cela veut dire qu'il existe
+                if($idUserquery->rowCount() === 1)
+                {
+                    $response->setHttpStatusCode(409);
+                    $response->setSuccess(false);
+                    $response->addMessage("Conflicts doublon");
+                    $response->send();
+                    exit;
+                }
+
+                $pdostatement->execute();
+                $response->setHttpStatusCode(200);
+                $response->setSuccess(true);
+                $response->addMessage("Ajout Succès");
+                $response->toCache(true);
+                $response->send();
+                exit;
             }
 
         } else {

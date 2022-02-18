@@ -7,7 +7,7 @@
     <title>Document</title>
 </head>
 <body>
-<form  id="formsId">
+<form method="post"  action="http://localhost:8383/Api_Mcp_test/tiers/create" id="formsId">
 
     <label>
         <input type="text" name="username">

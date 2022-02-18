@@ -25,6 +25,7 @@ class Users implements Model
 
     function create()
     {
+
         $sqlQuery = "INSERT INTO $this->table_name (username,password,age,email) values(:username,:password,:age,:email)";
         $pdoStatement = $this->db->getBddConnect()->prepare($sqlQuery);
         $passwordHash = password_hash($_POST['password'],PASSWORD_DEFAULT);
@@ -32,15 +33,18 @@ class Users implements Model
         $pdoStatement->bindParam(':password',$passwordHash);
         $pdoStatement->bindParam(':age',$_POST['age']);
         $pdoStatement->bindParam(':email',$_POST['email']);
+        //Stocker dans une variable le dernier insert
+        $_POST['id'] = $this->db->getBddConnect()->lastInsertId();
 
-        return $pdoStatement->execute();
+
+        return $pdoStatement;
     }
 
     function getAll()
     {
         $sqlQuery = "SELECT * FROM $this->table_name";
         $pdoStatement = $this->db->getBddConnect()->query($sqlQuery);
-        return $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
+        return $pdoStatement;
     }
 
     function getUserById($id)
