@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    $.ajax({
+    /*$.ajax({
         method: "GET",
         url: "http://localhost:8383/Api_Mcp_test/tiers",
         dataType:'json',
@@ -19,11 +19,26 @@ $(document).ready(function() {
             }
 
         }
-    });
+    });*/
+    /*$('#formsId').submit(function (e){
+        let username = $(this).find("input[name=username]").val();
+        let password=  $(this).find("input[name=password]").val();
+        let age =  $(this).find("input[name=age]").val();
+        let email = $(this).find("input[name=email]").val();
+        let data  = {username : username,password:password,age:age,email:email};
+
+        $.post("localhost/Api_Mcp_test/tiers/create",data,function (result)
+        {
+            console.log(e);
+        });
+
+
+    });*/
+
 
 
 });
-
+/*
 function getId(id)
 {
     $.ajax({
@@ -41,8 +56,8 @@ function getId(id)
 
         }
     });
-}
-
+}*/
+/*
 function remove(id)
 {
     $.ajax({
@@ -53,7 +68,7 @@ function remove(id)
             $('#'+id).fadeOut("slow");
         }
     });
-}
+}*/
 /*
 $(document).ready(function() {
 

@@ -17,10 +17,12 @@ class UsersController
      * @var Users $user
      */
     private $user;
+    private $response;
 
     public function __construct()
     {
         $this->user = new Users();
+        $this->response = new Response();
     }
 
     public function getUserById($id)
@@ -28,29 +30,28 @@ class UsersController
         if($_SERVER['REQUEST_METHOD'] === 'GET')
         {
             $pdoStatement = $this->user->getUserById($id);
-            $response = new Response();
+
             if($pdoStatement->rowCount() === 0)
             {
-                $response->setHttpStatusCode(404);
-                $response->setSuccess(false);
-                $response->addMessage("Tiers not found");
-                $response->send();
+                $this->response->setHttpStatusCode(404);
+                $this->response->setSuccess(false);
+                $this->response->addMessage("Tiers not found");
+                $this->response->send();
                 exit;
             }
 
             $findUser = $pdoStatement->fetch(PDO::FETCH_ASSOC);
 
-            $response->setHttpStatusCode(200);
-            $response->setSuccess(true);
-            $response->addMessage("find");
-            $response->toCache(true);
-            $response->setData($findUser);
-            $response->send();
+            $this->response->setHttpStatusCode(200);
+            $this->response->setSuccess(true);
+            $this->response->addMessage("find");
+            $this->response->toCache(true);
+            $this->response->setData($findUser);
+            $this->response->send();
             exit;
 
         } else {
-            http_response_code(405); //code qui respond à la méthod n'est pas autorisé
-            echo json_encode(["message" => "Method not allowed"]);
+            $this->notAllowed();
         }
     }
 
@@ -59,26 +60,25 @@ class UsersController
         if($_SERVER['REQUEST_METHOD'] === 'GET')
         {
             $users = $this->user->getAll();
-            $response = new Response();
+
             if($users->rowCount() === 0)
             {
-                $response->setHttpStatusCode(404);
-                $response->setSuccess(false);
-                $response->addMessage("Aucun user dans la db");
-                $response->send();
+                $this->response->setHttpStatusCode(404);
+                $this->response->setSuccess(false);
+                $this->response->addMessage("Aucun user dans la db veuillez en rajouter");
+                $this->response->send();
                 exit;
             }
 
-            $response->setHttpStatusCode(200);
-            $response->setSuccess(true);
-            $response->toCache(true);
-            $response->setData($users->fetchAll(PDO::FETCH_ASSOC));
-            $response->send();
+            $this->response->setHttpStatusCode(200);
+            $this->response->setSuccess(true);
+            $this->response->toCache(true);
+            $this->response->setData($users->fetchAll(PDO::FETCH_ASSOC));
+            $this->response->send();
             exit;
 
         } else {
-            http_response_code(405); //code qui respond à la méthod n'est pas autorisé
-            echo json_encode(["message" => "Method not allowed"]);
+            $this->notAllowed();
         }
     }
 
@@ -97,26 +97,24 @@ class UsersController
 
             $deletequery = $this->user->delete($id);
             $idUserquery = $this->user->getUserById($id);
-            $response = new Response();
 
             if($idUserquery->rowCount()===0)
             {
-                $response->setHttpStatusCode(404);
-                $response->setSuccess(false);
-                $response->addMessage("L'id tiers n'existe pas");
-                $response->send();
+                $this->response->setHttpStatusCode(404);
+                $this->response->setSuccess(false);
+                $this->response->addMessage("L'id tiers n'existe pas");
+                $this->response->send();
                 exit;
             }
             $deletequery->execute();
-            $response->setHttpStatusCode(200);
-            $response->setSuccess(true);
-            $response->addMessage("Delete");
-            $response->toCache(true);
-            $response->send();
+            $this->response->setHttpStatusCode(200);
+            $this->response->setSuccess(true);
+            $this->response->addMessage("Delete");
+            $this->response->toCache(true);
+            $this->response->send();
 
         } else {
-            http_response_code(405); //code qui respond à la méthod n'est pas autorisé
-            echo json_encode(["message" => "Method not allowed"]);
+            $this->notAllowed();
         }
     }
 
@@ -124,35 +122,50 @@ class UsersController
     {
         if($_SERVER['REQUEST_METHOD'] === 'POST')
         {
+                //Vérification que le formulaire aie bien été posté
             if (isset($_POST['submit']))
             {
                 $pdostatement = $this->user->create();
+                //Vérification des doublons --> pas bon faut corriger
+                /*$idUserquery = $this->user->getUserById($_POST['id']);
 
-                $idUserquery = $this->user->getUserById($_POST['id']);
-                $response = new Response();
                 //cela veut dire qu'il existe
                 if($idUserquery->rowCount() === 1)
                 {
-                    $response->setHttpStatusCode(409);
-                    $response->setSuccess(false);
-                    $response->addMessage("Conflicts doublon");
-                    $response->send();
+                    $this->response->setHttpStatusCode(409);
+                    $this->response->setSuccess(false);
+                    $this->response->addMessage("Conflicts doublon");
+                    $this->response->send();
                     exit;
-                }
+                }*/
 
-                $pdostatement->execute();
-                $response->setHttpStatusCode(200);
-                $response->setSuccess(true);
-                $response->addMessage("Ajout Succès");
-                $response->toCache(true);
-                $response->send();
+                //Il faut vérifier avant de pouvoir execute que tous les champs sois remplis
+
+                //S'il n'y a pas de doublons on peut executer la création
+
+                $this->response->setHttpStatusCode(200);
+                $this->response->setSuccess(true);
+                $this->response->addMessage("Ajout Succès");
+                $this->response->toCache(true);
+                $this->response->setData($pdostatement->execute());
+                $this->response->send();
                 exit;
             }
 
         } else {
-            http_response_code(405); //code qui respond à la méthod n'est pas autorisé
-            echo json_encode(["message" => "Method not allowed"]);
+            //Cela ne correspond pas à la bon méthode pour la création
+            $this->notAllowed();
         }
+    }
+
+
+    public function notAllowed()
+    {
+        $this->response->setHttpStatusCode(405);
+        $this->response->setSuccess(false);
+        $this->response->addMessage("Method not allowed");
+        $this->response->send();
+        exit;
     }
 
 }

@@ -7,8 +7,8 @@ class Database
     private $host = 'localhost';
     private$db_name = "apidatabase";
     private$username = "root";
-    //private$password = "";
-    private$password = "Suveva70";
+    private$password = "";
+    //private$password = "Suveva70";
 
     private $bdd_connect = null;
     //Creation of the database

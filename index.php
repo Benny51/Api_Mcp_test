@@ -3,7 +3,6 @@
 
 //Point d'entrée de l'application, c'est ici que les routes seront créées
 
-use Controller\UsersController;
 use Router\Router;
 use Router\RouterException;
 
@@ -14,7 +13,9 @@ require_once ('Infrastructure/Config/Database.php');
 require_once ('Router/Router.php');
 require_once ('Model/Users.php');
 
-$router = new Router($_GET['url']);
+//$router = new Router($_GET['url']);
+
+//print_r($_GET['url']);
 
 //Avec une fonction anonyme
 /*$router->get('/tiers/:id', function($id){
@@ -52,13 +53,16 @@ try {
     })->with('id', '[0-9]+')->with('slug', '[a-z\-0-9]+')->run();
 } catch (RouterException $e) {}*/
 
-$router->get('/tiers/:id', "Users#getUserById");
+
+$router = new Router($_GET['url']);
+
+$router->get('/tiers',"Users#getAllUsers");
+
+$router->get('/tiers/:id', "Users#getUserById")->with('id', '[0-9]+');
 
 $router->post('/tiers/create', "Users#create");
 
-$router->delete('/tiers/delete/:id', "Users#delete");
-
-$router->get('/tiers',"Users#getAllUsers");
+$router->delete('/tiers/delete/:id', "Users#delete")->with('id', '[0-9]+');
 
 try {
     $router->run();
