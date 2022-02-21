@@ -58,19 +58,19 @@ try {
 
 
 $router = new Router($_GET['url']);
+//Fake ipp pour le get all
+$_POST['cond'] = "IPP";
 
-$router->get('/tiers',"Tiers#getAllTiers");
+//$router->get('/tiers',"Tiers#getAllTiers");
 
-$router->get('/tiers/:id', "Tiers#getTierById")->with('id','[a-z\-0-9\_]+');
+//$router->get('/tiers/MCP',"Tiers#getMCPTiers");
 
-$router->get('/tiers/:id', "Tiers#getTierById")->with('id','[a-z\-0-9\_]+');
+//$router->get('/tiers/:id', "Tiers#getTierById")->with('id','[a-z\-0-9\_]+');
+//$_SERVER['REQUEST_METHOD'] = 'POST';
+$router->post('/tiers/create',"Tiers#create");
+//print_r($_SERVER);
+//$router->delete('/tiers/:id/delete', "Users#delete")->with('id', '[0-9]+');
 
-
-/*
-$router->post('/tiers/create', "Users#create");
-
-$router->delete('/tiers/:id/delete', "Users#delete")->with('id', '[0-9]+');
-*/
 try {
     $router->run();
 } catch (RouterException $e) {

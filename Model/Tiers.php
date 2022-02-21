@@ -188,7 +188,9 @@ class Tiers implements Model
             $sqlQuery = "SELECT * from $this->table_name where $this->colIsoc_Ipp = :isoc_ipp";
             $pdostatement = $this->db->getBddConnect()->prepare($sqlQuery);
             $pdostatement->bindParam(":isoc_ipp",$_POST['cond']);
-            return $pdostatement->execute();
+            $pdostatement->execute();
+
+            return $pdostatement;
         }
         //Sinon on renvoie tout les tiers
         $sqlQuery = "SELECT * FROM $this->table_name";
@@ -207,10 +209,10 @@ class Tiers implements Model
 
     public function getMCPTiers()
     {
-
-        $sqlQuery = "SELECT * FROM $this->table_name where substring($this->colId_winbooks,0,3) ";
+        $sqlQuery = "SELECT * FROM $this->table_name where substring($this->colId_winbooks,1,3) = 'MCP' ";
         return $this->db->getBddConnect()->query($sqlQuery);
     }
+
 
     public function update($id)
     {

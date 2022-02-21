@@ -1,34 +1,23 @@
 $(document).ready(function() {
 
-    $('#formsId').submit(function (ev) {
-        ev.preventDefault();
+    // $('#formsId').submit(function (ev) {
+    //     ev.preventDefault();
+    //
+    //     $.ajax({
+    //         method: "POST",
+    //         url: "http://localhost:8383/Api_Mcp_test/tiers/create",
+    //         dataType: "json",
+    //         success: function (res) {
+    //             console.log(res)
+    //         },
+    //         error:function(error){
+    //             console.log(error);
+    //         }
+    //     });
+    //
+    // });
 
-        let username = $(this).find('input[name="username"]').val();
-        let email = $(this).find('input[name="email"]').val();
-        let age = $(this).find('input[name="age"]').val();
-        let password = $(this).find('input[name="password"]').val();
-
-        let formData = {username:username,email:email,age:age,password:password};
-
-        $.ajax({
-            method: "POST",
-            url: "http://localhost:8383/Api_Mcp_test/tiers/create",
-            dataType: "json",
-            data : formData,
-            beforeSend : function (){
-                console.log(formData)
-            },
-            success: function (res) {
-                console.log(res)
-            },
-            error:function(error){
-                console.log(error);
-            }
-        });
-
-    });
-
-
+/*
     $.ajax({
         method: "GET",
         url: "http://localhost:8383/Api_Mcp_test/tiers",
@@ -47,7 +36,7 @@ $(document).ready(function() {
             }
 
         }
-    });
+    });*/
 
 
 

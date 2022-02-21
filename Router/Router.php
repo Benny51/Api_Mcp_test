@@ -69,22 +69,22 @@ class Router
         /***
          * @var $route Route
          */
-        /*foreach($this->routes["POST"] as $route){
-            $_SERVER['REQUEST_METHOD'] = "POST";
-            if($route->match($this->url)){
-                return $route->call();
-            }
-        }*/
+        foreach($this->routes[$_SERVER['REQUEST_METHOD']] as $route){
 
-        /***
-         * @var $route Route
-         */
-        foreach($this->routes["GET"] as $route){
-            $_SERVER['REQUEST_METHOD'] = "GET";
             if($route->match($this->url)){
                 return $route->call();
             }
         }
+
+        /***
+         * @var $route Route
+         */
+        /*foreach($this->routes["GET"] as $route){
+            $_SERVER['REQUEST_METHOD'] = "GET";
+            if($route->match($this->url)){
+                return $route->call();
+            }
+        }*/
 
         /***
          * @var $route Route

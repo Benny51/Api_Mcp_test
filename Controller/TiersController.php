@@ -55,6 +55,36 @@ class TiersController
         }
     }
 
+    public function getMCPTiers()
+    {
+        if($_SERVER['REQUEST_METHOD'] === 'GET')
+        {
+            $pdoStatement = $this->tier->getMCPTiers();
+
+            if($pdoStatement->rowCount() === 0)
+            {
+                $this->response->setHttpStatusCode(404);
+                $this->response->setSuccess(false);
+                $this->response->addMessage("Aucun MCP dans la db");
+                $this->response->send();
+                exit;
+            }
+
+            $this->response->setHttpStatusCode(200);
+            $this->response->setSuccess(true);
+            $this->response->setData($pdoStatement->fetchAll(PDO::FETCH_ASSOC));
+            $this->response->send();
+            exit;
+
+        } else {
+            $this->notAllowed();
+        }
+    }
+
+    /***
+     * @param $id : Id winbooks
+     * @return void
+     */
     public function getTierById($id)
     {
         if($_SERVER['REQUEST_METHOD'] === 'GET')
@@ -81,6 +111,63 @@ class TiersController
             exit;
 
         } else {
+            $this->notAllowed();
+        }
+    }
+
+    public function delete($id)
+    {
+
+    }
+
+    public function create()
+    {
+        if($_SERVER['REQUEST_METHOD'] === 'POST')
+        {
+
+            //Il faut vérifier avant de pouvoir execute que tous les champs sois remplis
+            /*if(!isset($_POST['submit']))
+            {
+                $this->response->setHttpStatusCode(422);
+                $this->response->setSuccess(false);
+                $this->response->addMessage("Veuillez Soumettre votre formulaire");
+                $this->response->send();
+                exit;
+            }*/
+
+
+
+            //Vérification que le formulaire aie bien été posté
+            if (isset($_POST['submit']))
+            {
+                $pdostatement = $this->tier->create();
+                //Vérification des doublons --> pas bon faut corriger
+                /*$idUserquery = $this->user->getUserById($_POST['id']);
+
+                //cela veut dire qu'il existe
+                if($idUserquery->rowCount() === 1)
+                {
+                    $this->response->setHttpStatusCode(409);
+                    $this->response->setSuccess(false);
+                    $this->response->addMessage("Conflicts doublon");
+                    $this->response->send();
+                    exit;
+                }*/
+
+
+                $pdostatement->execute();
+                //S'il n'y a pas de doublons on peut executer la création
+                $this->response->setHttpStatusCode(200);
+                $this->response->setSuccess(true);
+                $this->response->addMessage("Ajout Succès");
+                $this->response->toCache(true);
+
+                $this->response->send();
+                exit;
+            }
+
+        } else {
+            //Cela ne correspond pas à la bon méthode pour la création
             $this->notAllowed();
         }
     }
