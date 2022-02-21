@@ -5,7 +5,7 @@ use Model\Response;
 use Model\Users;
 use PDO;
 
-header("Access-Control-Allow-Origin: *");
+header('Access-Control-Allow-Origin: *');
 header("Content-Type: application/json; charset=UTF-8"); //réponse en JSON
 header("Access-Control-Allow-Methods: OPTIONS,GET,POST,PUT,DELETE");
 header("Access-Control-Max-Age: 3600"); // durée de vie de la requette
@@ -122,6 +122,19 @@ class UsersController
     {
         if($_SERVER['REQUEST_METHOD'] === 'POST')
         {
+
+            //Il faut vérifier avant de pouvoir execute que tous les champs sois remplis
+            /*if(!isset($_POST['submit']))
+            {
+                $this->response->setHttpStatusCode(422);
+                $this->response->setSuccess(false);
+                $this->response->addMessage("Veuillez Soumettre votre formulaire");
+                $this->response->send();
+                exit;
+            }*/
+
+
+
                 //Vérification que le formulaire aie bien été posté
             if (isset($_POST['submit']))
             {
@@ -139,7 +152,14 @@ class UsersController
                     exit;
                 }*/
 
-                //Il faut vérifier avant de pouvoir execute que tous les champs sois remplis
+                if(empty($_POST['email']) && empty($_POST['username']) && empty($_POST['age']) && empty($_POST['password']))
+                {
+                    $this->response->setHttpStatusCode(400);
+                    $this->response->setSuccess(false);
+                    $this->response->addMessage("Veuillez remplir tous les champs");
+                    $this->response->send();
+                    exit;
+                }
 
                 //S'il n'y a pas de doublons on peut executer la création
 

@@ -6,12 +6,15 @@
 use Router\Router;
 use Router\RouterException;
 
+require_once ('Infrastructure/Config/Database.php');
 require_once ('Model/Response.php');
 require_once ('Model/Model.php');
-require_once ('Controller/UsersController.php');
-require_once ('Infrastructure/Config/Database.php');
+require_once ('Model/Tiers.php');
+//require_once ('Controller/UsersController.php');
+require_once ('Controller/TiersController.php');
 require_once ('Router/Router.php');
-require_once ('Model/Users.php');
+
+//require_once ('Model/Users.php');
 
 //$router = new Router($_GET['url']);
 
@@ -56,14 +59,18 @@ try {
 
 $router = new Router($_GET['url']);
 
-$router->get('/tiers',"Users#getAllUsers");
+$router->get('/tiers',"Tiers#getAllTiers");
 
-$router->get('/tiers/:id', "Users#getUserById")->with('id', '[0-9]+');
+$router->get('/tiers/:id', "Tiers#getTierById")->with('id','[a-z\-0-9\_]+');
 
+$router->get('/tiers/:id', "Tiers#getTierById")->with('id','[a-z\-0-9\_]+');
+
+
+/*
 $router->post('/tiers/create', "Users#create");
 
-$router->delete('/tiers/delete/:id', "Users#delete")->with('id', '[0-9]+');
-
+$router->delete('/tiers/:id/delete', "Users#delete")->with('id', '[0-9]+');
+*/
 try {
     $router->run();
 } catch (RouterException $e) {

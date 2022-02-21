@@ -58,12 +58,10 @@ class Route
 
     private function paramMatch($match)
     {
-
         if(isset($this->params[$match[1]]))
         {
             return '('.$this->params[$match[1]].')';
         }
-
         return '([^/]+)';
     }
 
@@ -72,9 +70,7 @@ class Route
      * @return false|mixed
      */
     public function call(){
-
         //Si c'est une chaine de caractère cela veut dire que l'on fait appel au controller ou au model
-
         if(is_string($this->callable))
         {
             //# pour trouver la méthode dans le controller
@@ -99,32 +95,5 @@ class Route
         //Stocker le paramètres avec son expression régulière
         $this->params[$name_params] = str_replace('(','(?:',$regex);
         return $this; // fluent pour enchainer les arguments
-    }
-
-    /*public function getUrl($params)
-    {
-        $path = $this->path;
-
-        foreach ($params as $param => $k) {
-            $path = str_replace(":$param",$k,$path);
-        }
-
-        return $path;
-    }*/
-
-    /**
-     * @return string
-     */
-    public function getPath()
-    {
-        return $this->path;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getMethod()
-    {
-        return $this->method;
     }
 }

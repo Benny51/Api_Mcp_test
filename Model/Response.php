@@ -81,12 +81,20 @@ class Response {
             // set messages in json response
             $this->_responseData['messages'] = $this->_messages;
             // set data array in json response
-            if(http_response_code($this->_httpStatusCode) === 200)
-                $this->_responseData['data'] = $this->_data;
+            //if(http_response_code($this->_httpStatusCode) === 200)
+            $this->_responseData['data'] = $this->_data;
         }
 
         // encode the responseData array to json response output
         echo json_encode($this->_responseData);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getData()
+    {
+        return $this->_data;
     }
 
 }
